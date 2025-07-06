@@ -321,6 +321,22 @@
 }
 </style>
 
+<!-- OneSignal SDK -->
+<script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async=""></script>
+<script>
+  window.OneSignal = window.OneSignal || [];
+  OneSignal.push(function() {
+    OneSignal.init({
+      appId: "ed054296-c859-4e0d-9ff4-a981c675fe01",
+      notifyButton: {
+        enable: true,
+      },
+      allowLocalhostAsSecureOrigin: true
+    });
+  });
+</script>
+
+
 </head>
 <body>
     <div class="container">
