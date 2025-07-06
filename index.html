@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -407,15 +406,11 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="reminderTime">Recordar con</label>
-                        <select id="reminderTime" name="reminderTime">
-                            <option value="15">15 minutos antes</option>
-                            <option value="30">30 minutos antes</option>
-                            <option value="60">1 hora antes</option>
-                            <option value="120">2 horas antes</option>
-                            <option value="1440">1 día antes</option>
-                        </select>
+                        <label for="reminderTime">Recordar con (minutos antes)</label>
+                        <input type="number" id="reminderTime" name="reminderTime" min="1" max="10080" value="15" required>
+                        <small style="color: #718096;">(Máximo: 10080 minutos = 7 días)</small>
                     </div>
+
 
                     <button type="submit" class="btn">Crear Recordatorio</button>
                     <button type="button" class="btn btn-secondary" onclick="clearForm()">Limpiar</button>
@@ -456,14 +451,12 @@
         let reminders = [];
         let editingId = null;
 
-        // Cargar recordatorios del almacenamiento al iniciar
         window.addEventListener('load', function () {
             loadReminders();
             updateStats();
             checkReminders();
             setInterval(checkReminders, 60000); // Verificar cada minuto
 
-            // Solicitar permiso para notificaciones si es compatible
             if ('Notification' in window) {
                 if (Notification.permission === 'default') {
                     Notification.requestPermission().then(permission => {
@@ -480,7 +473,7 @@
         // Configurar fecha mínima como hoy
         document.getElementById('date').min = new Date().toISOString().split('T')[0];
 
-        // Manejar envío del formulario
+  
         document.getElementById('reminderForm').addEventListener('submit', function (e) {
             e.preventDefault();
 
@@ -510,11 +503,21 @@
                 showNotification('✅ Recordatorio creado exitosamente', 'success');
             }
 
+            // Pedir permiso para notificaciones si aún no se ha concedido
+            if ('Notification' in window && Notification.permission === 'default') {
+                Notification.requestPermission().then(permission => {
+                    if (permission === 'granted') {
+                        showNotification('🔔 Notificaciones del navegador activadas', 'success');
+                    }
+                });
+            }
+
             saveReminders();
             displayReminders();
             updateStats();
             clearForm();
         });
+
 
         function clearForm() {
             document.getElementById('reminderForm').reset();
@@ -657,14 +660,16 @@
                 if (reminder.notified) return;
 
                 const reminderDateTime = new Date(reminder.date + 'T' + reminder.time);
+                const diffMs = reminderDateTime - now;
+                const diffMinutes = Math.round(diffMs / (1000 * 60));
                 const notificationTime = new Date(reminderDateTime.getTime() - (reminder.reminderTime * 60 * 1000));
 
                 if (now >= notificationTime && now < reminderDateTime) {
-                    showNotification(`🔔 Recordatorio: ${reminder.title} en ${reminder.reminderTime} minutos`, 'warning');
+                    showNotification(`🔔 Recordatorio: ${reminder.title} en ${diffMinutes} minuto${diffMinutes !== 1 ? 's' : ''}`, 'warning');
 
-                    if (Notification.permission === 'granted') {
+                    if ('Notification' in window && Notification.permission === 'granted') {
                         new Notification(`📅 ${reminder.title}`, {
-                            body: `Empieza en ${reminder.reminderTime} minutos`,
+                            body: `Empieza en ${diffMinutes} minuto${diffMinutes !== 1 ? 's' : ''}`,
                             icon: 'https://upload.wikimedia.org/wikipedia/commons/3/34/Icon_Reminder.png'
                         });
                     }
@@ -674,6 +679,7 @@
                 }
             });
         }
+
 
         function showNotification(message, type = 'info') {
             const container = document.getElementById('notificationContainer');
