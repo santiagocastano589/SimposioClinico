@@ -1,3 +1,5 @@
+
+ayudeme a que la seccion de recordatorio con minutos de anticipacion sea como reloj pero en minutos no horas y ayudeme que el navegador suelte notificaciones tanto en pc como en celular para el recordatorio
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -321,22 +323,6 @@
 }
 </style>
 
-<!-- OneSignal SDK -->
-<script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async=""></script>
-<script>
-  window.OneSignal = window.OneSignal || [];
-  OneSignal.push(function() {
-    OneSignal.init({
-      appId: "ed054296-c859-4e0d-9ff4-a981c675fe01",
-      notifyButton: {
-        enable: true,
-      },
-      allowLocalhostAsSecureOrigin: true
-    });
-  });
-</script>
-
-
 </head>
 <body>
     <div class="container">
@@ -489,7 +475,8 @@
         // Configurar fecha mínima como hoy
         document.getElementById('date').min = new Date().toISOString().split('T')[0];
 
-  
+        // Manejar envío del formulario
+        // Manejar envío del formulario
         document.getElementById('reminderForm').addEventListener('submit', function (e) {
             e.preventDefault();
 
