@@ -711,7 +711,23 @@
             const options = { year: 'numeric', month: 'long', day: 'numeric' };
             return new Date(dateStr).toLocaleDateString('es-ES', options);
         }
+
+        
         </script>
+        <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" async=""></script>
+        <script>
+            window.OneSignal = window.OneSignal || [];
+            OneSignal.push(function () {
+                OneSignal.init({
+                appId: "ed054296-c859-4e0d-9ff4-a981c675fe01",
+                notifyButton: {
+                    enable: true,
+                },
+                });
+            });
+        </script>
+
+
 
 
 </body>
